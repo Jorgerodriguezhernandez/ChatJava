@@ -41,8 +41,54 @@ public class Cliente {
         }
     }
 
-    private static String NombreSaludo(ObjectInputStream ois, ObjectOutputStream oos) {
+    public static String NombreSaludo(ObjectInputStream ois, ObjectOutputStream oos){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Introduzca su nombre: ");
+        String nombre = sc.nextLine();
+        try {
+            oos.writeObject(nombre);
+            String returnValue = (String) ois.readObject();
+            System.out.println(returnValue);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return nombre;
     }
 
-    private static void opcionMensaje(ObjectInputStream ois, ObjectOutputStream oos) {
+
+
+    public static void opcionMensaje(ObjectInputStream ois, ObjectOutputStream oos){
+        String opcion = "";
+        Scanner sc = new Scanner(System.in);
+        while ( !opcion.equals("Good bye") ){
+            try {
+                System.out.println("Seleccione Bye para cerrar o escriba message: <texto> para mandar un mensaje: ");
+                opcion = sc.nextLine();
+
+                if (opcion.contains("message:")) {
+
+                    oos.writeObject(opcion);
+
+                    opcion = (String) ois.readObject();
+                    StringTokenizer cachemsj = new StringTokenizer(opcion, "~~~");
+
+                    while (cachemsj.hasMoreTokens()){
+                        System.out.println(cachemsj.nextToken());
+                    }
+
+                }else if (opcion.equals("bye")) {
+                    oos.writeObject(opcion);
+                    opcion = (String) ois.readObject();
+                }else{
+                    System.out.println("Error en la lectura: valor no reconocido");
+                }
+            }catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }}
     }
+}
